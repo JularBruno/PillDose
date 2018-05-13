@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">PillDose</string>
+    <string name="bt1">Agregar</string>
+    <string name="bt2">Pastilla Nueva</string>
+    <string name="bt3">Enviar al pastillero</string>
+    <string name="lbl1">Paciente Nuevo</string>
+    <string name="lbl2">Pastilla Nueva</string>
+    <string name="lbl3">Módulo del Pastillero</string>
+    <string name="spinner_title">Seleccionar Paciente</string>
+</resources>
