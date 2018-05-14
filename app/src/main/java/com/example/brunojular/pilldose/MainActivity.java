@@ -2,6 +2,7 @@ package com.example.brunojular.pilldose;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,14 +17,21 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     DatabaseHelper mDatabaseHelper;
 
     Button buttonAdd, buttonNewPill, buttonSend;
     EditText editText, editText2, editText3;
     Spinner spinner, spinner2, spinner3;
-    RecyclerView recyclerView;
+
+    /*
+    RecyclerView
+     */
+
+    ArrayList<PillVO> listDatos;
+    RecyclerView recycler;
+
 
     /* Bluetooth */
 
@@ -35,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
 
 
-    private static final String TAG= "ListDataActivity";
+    private static final String TAG = "ListDataActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +66,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner2 = (Spinner) findViewById(R.id.spinner2);
         spinner3 = (Spinner) findViewById(R.id.spinner3);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
-        mDatabaseHelper = new DatabaseHelper(this);
-
-
+        GlobalVariables.setmDatabaseHelper(new DatabaseHelper(this));
+        mDatabaseHelper = GlobalVariables.getmDatabaseHelper();
 
         /*
-        Adapters
+        RecyclerView Popualtor
+         */
+
+        recycler = (RecyclerView) findViewById(R.id.recyclerView);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+
+        listDatos = new ArrayList<>();
+
+        recycler.setAdapter(new AdapterDatos(PillVO.getPills()));
+
+        /*
+        Adapters for spinners
          */
 
         ArrayAdapter<CharSequence> adapterh = ArrayAdapter.createFromResource(this,
@@ -84,15 +101,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner3.setOnItemSelectedListener(this);
 
         /*
+
+         */
+
+        GlobalVariables.setmDatabaseHelper(new DatabaseHelper(this));
+
+
+        /*
         Listeners for btns
          */
+
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String newEntry = editText.getText().toString();
 
-                if (editText.length() > 0){
+                if (editText.length() > 0) {
                     AddData(newEntry);
                     editText.setText("");
                 } else {
@@ -105,8 +130,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         buttonNewPill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String newEntry1 = editText2.getText().toString();
-                String newEntry2 = editText3.getText().toString();
+                String pill_name = editText2.getText().toString();
+                String pill_module = editText3.getText().toString();
                 String textSp1 = spinner2.getSelectedItem().toString();
                 String textSp2 = spinner3.getSelectedItem().toString();
 
@@ -114,20 +139,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 Integer id_ppl = 1;
 
-                Toast.makeText(getApplicationContext(), "horario is "+ horario, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "horario is " + horario, Toast.LENGTH_LONG).show();
 
             /*
 
                 Toast.makeText(getApplicationContext(), "text is "+ textSp, Toast.LENGTH_LONG).show();
             */
 
-                if (editText2.length() > 0 && editText3.length() > 0){
+                if (editText2.length() > 0 && editText3.length() > 0) {
 
-                    Integer intNewEntry2 = Integer.parseInt(newEntry2);
+                    Integer intNewEntry2 = Integer.parseInt(pill_module);
 
-                    if (intNewEntry2 <= 10){
+                    if (intNewEntry2 <= 10) {
 
-                        AddData2(newEntry1, newEntry2, horario, id_ppl);
+                        PillVO newPill = new PillVO(pill_module, pill_name, horario, id_ppl);
+                        newPill.save();
+
+                        recycler.setAdapter(new AdapterDatos(PillVO.getPills()));
 
                         editText2.setText("");
                         editText3.setText("");
@@ -165,6 +193,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         if (insertData){
             toastMessage("Data Succesfully entered");
+
+
         } else {
             toastMessage("Oops! Something went wrong");
         }
@@ -203,4 +233,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
 }

@@ -15,20 +15,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String Tag = "DatabaseHelper";
 
-    private static final String TABLE_NAME = "people_table";
-    private static final String COL1 = "ID_people";
-    private static final String COL2 = "name";
+    public static final String TABLE_NAME = "people_table";
+    public static final String COL1 = "ID_people";
+    public static final String COL2 = "name";
 
-    private static final String TABLE_NAME2 = "pill_table";
-    private static final String COL3 = "ID_pill";
-    private static final String COL4 = "pill";
-    private static final String COL5 = "modulo";
-    private static final String COL6 = "horario";
+    public static final String TABLE_NAME2 = "pill_table";
+    public static final String COL3 = "ID_pill";
+    public static final String COL4 = "pill";
+    public static final String COL5 = "modulo";
+    public static final String COL6 = "horario";
 
 
 
     public DatabaseHelper(Context context) {
-        super(context, TABLE_NAME, null, 1);
+
+        super(context, "DatabaseHelper", null, 1);
     }
 
     /*
@@ -85,6 +86,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL5, newEntry2);
         contentValues.put(COL1, id_ppl);
         contentValues.put(COL6, horarios);
+
 
 
         long result = db.insert(TABLE_NAME2, null, contentValues);
