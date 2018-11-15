@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array
+        name="string_days">
+        <item>1 -Lunes</item>
+        <item>2-Martes</item>
+        <item>3-Miércoles</item>
+        <item>4-Jueves</item>
+        <item>5-Viernes</item>
+        <item>6-Sábado</item>
+        <item>7-Domingo</item>
+        <item>8-Todos</item>
+    </string-array>
+</resources>

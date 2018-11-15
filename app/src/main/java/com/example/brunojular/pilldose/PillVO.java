@@ -3,7 +3,9 @@ package com.example.brunojular.pilldose;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
+import java.io.PipedInputStream;
 import java.util.ArrayList;
 
 public class PillVO {
@@ -12,33 +14,35 @@ public class PillVO {
     private String modulo;
     private String pill;
     private String horario;
-    private Integer ID_people;
+    private String name;
     private DatabaseHelper dataBase;
 
 
-    public PillVO(String modulo, String pill, String horario, Integer ID_people) {
+    public PillVO(String modulo, String pill, String horario, String name) {
         this.modulo = modulo;
         this.pill = pill;
         this.horario = horario;
-        this.ID_people = ID_people;
+        this.name = name;
         this.dataBase = GlobalVariables.getmDatabaseHelper();
     }
 
     public boolean save(){
 
         SQLiteDatabase db = this.dataBase.getWritableDatabase();
+
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseHelper.COL4, this.pill);
-        contentValues.put(DatabaseHelper.COL5, this.modulo);
-        contentValues.put(DatabaseHelper.COL1, this.ID_people);
-        contentValues.put(DatabaseHelper.COL6, this.horario);
+        contentValues.put(DatabaseHelper.pill, this.pill);
+        contentValues.put(DatabaseHelper.modulo, this.modulo);
+        contentValues.put(DatabaseHelper.horario, this.horario);
+        contentValues.put(DatabaseHelper.name, this.name);
 
-
-        long result = db.insert(DatabaseHelper.TABLE_NAME2, null, contentValues);
+        long result = db.insert(DatabaseHelper.pill_table, null, contentValues);
 
         if (result == -1) {
             return false;
         } else {
+            Log.d("databaseHelper", "FITLER: " + MainActivity.filter);
+            Log.d("databaseHelper", "Se guardó");
             this.ID_pill = result;
             return true;
         }
@@ -76,34 +80,67 @@ public class PillVO {
         this.horario = horario;
     }
 
-    public Integer getID_people() {
-        return ID_people;
+    public String getName() {
+        return name;
     }
 
-    public void setID_people(Integer ID_people) {
-        this.ID_people = ID_people;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public static ArrayList<PillVO> getPills() {
+    public static ArrayList<PillVO> getPillsForBluetooth(String person) {
+
+        SQLiteDatabase db = GlobalVariables.getmDatabaseHelper().getWritableDatabase();
+
+        ArrayList<PillVO> list = new ArrayList<>();
+
+        String query = "SELECT * FROM " + DatabaseHelper.pill_table + " WHERE name == '" + person + "';";
+
+        Cursor data = db.rawQuery(query, null);
+
+        data.moveToFirst();
+
+        while (data.moveToNext()) {
+            list.add(
+                    new PillVO(
+                            data.getString(data.getColumnIndex(DatabaseHelper.modulo)),
+                            data.getString(data.getColumnIndex(DatabaseHelper.pill)),
+                            data.getString(data.getColumnIndex(DatabaseHelper.horario)),
+                            data.getString(data.getColumnIndex(DatabaseHelper.name))
+                    )
+            );
+
+        }
+
+        return list;
+
+    }
+
+    public static ArrayList<PillVO> getPills(String person){
 
         SQLiteDatabase db = GlobalVariables.getmDatabaseHelper().getWritableDatabase();
         ArrayList<PillVO> list = new ArrayList<PillVO>();
 
-        String query= "SELECT * FROM "+DatabaseHelper.TABLE_NAME2+";";
+        String query = "SELECT * FROM " + DatabaseHelper.pill_table + " WHERE name == '" + person + "';";
 
         Cursor data = db.rawQuery(query,null);
+
         data.moveToFirst();
+
         while (data.moveToNext()) {
             list.add(
                     new PillVO(
-                            data.getString(data.getColumnIndex(DatabaseHelper.COL5)),
-                            data.getString(data.getColumnIndex(DatabaseHelper.COL4)),
-                            data.getString(data.getColumnIndex(DatabaseHelper.COL6)),
-                            data.getInt(data.getColumnIndex(DatabaseHelper.COL1))
+                            data.getString(data.getColumnIndex(DatabaseHelper.modulo)),
+                            data.getString(data.getColumnIndex(DatabaseHelper.pill)),
+                            data.getString(data.getColumnIndex(DatabaseHelper.horario)),
+                            data.getString(data.getColumnIndex(DatabaseHelper.name))
                     )
             );
+
         }
+
         return list;
     }
 
 }
+

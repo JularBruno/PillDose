@@ -1,7 +1,5 @@
 package com.example.brunojular.pilldose;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +9,10 @@ import java.util.ArrayList;
 
 public class PillsToRecycler extends AppCompatActivity {
 
+    /*
+
     ArrayList<PillVO> listaPills = PillVO.getPills();
+
 
     RecyclerView recycler;
 
@@ -34,5 +35,6 @@ public class PillsToRecycler extends AppCompatActivity {
 
 
     }
+*/
 
 }
